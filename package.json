@@ -1,0 +1,56 @@
+{
+  "name": "interop-mediator",
+  "version": "0.0.1",
+  "description": "mediator",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BaobabHealthTrust/interop-mediator.git"
+  },
+  "keywords": [
+    "interop",
+    "mediator",
+    "openHim",
+    "MHFR"
+  ],
+  "author": "BHT kuunika",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BaobabHealthTrust/interop-mediator/issues"
+  },
+  "homepage": "https://github.com/BaobabHealthTrust/interop-mediator#readme",
+  "dependencies": {
+    "async": "^2.6.1",
+    "config": "^2.0.1",
+    "confit": "^2.3.0",
+    "express": "^4.16.3",
+    "express-async-errors": "^3.0.0",
+    "express-remove-route": "^1.0.0",
+    "graceful-fs": "^4.1.11",
+    "joi": "^13.7.0",
+    "joi-objectid": "^2.0.0",
+    "latest-version": "^4.0.0",
+    "mkdirp": "^0.5.1",
+    "mongoose": "^5.3.0",
+    "needle": "^2.2.4",
+    "node-statsd": "^0.1.1",
+    "nodemon": "^1.18.4",
+    "on-finished": "^2.3.0",
+    "openhim-mediator-utils": "^0.2.3",
+    "server-graceful-shutdown": "^0.1.2",
+    "type-is": "^1.6.16",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.6.1",
+    "eslint-config-google": "^0.10.0",
+    "jest": "^23.6.0",
+    "supertest": "^3.3.0"
+  }
+}
