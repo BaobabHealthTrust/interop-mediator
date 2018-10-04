@@ -6,6 +6,5 @@
     "trustSelfSigned": "true"
   },
   "register" : true,
-  "heartbeat": true,
-  "database": "mongodb://localhost:27017/interop-mediator"
+  "heartbeat": true
 }

@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "nodemon index"
   },
   "repository": {
     "type": "git",
@@ -29,15 +30,18 @@
     "async": "^2.6.1",
     "config": "^2.0.1",
     "confit": "^2.3.0",
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "express-async-errors": "^3.0.0",
     "express-remove-route": "^1.0.0",
     "graceful-fs": "^4.1.11",
     "joi": "^13.7.0",
     "joi-objectid": "^2.0.0",
+    "jshint": "^2.9.6",
     "latest-version": "^4.0.0",
     "mkdirp": "^0.5.1",
     "mongoose": "^5.3.0",
+    "morgan": "^1.9.1",
     "needle": "^2.2.4",
     "node-statsd": "^0.1.1",
     "nodemon": "^1.18.4",
@@ -49,8 +53,19 @@
   },
   "devDependencies": {
     "eslint": "^5.6.1",
+    "eslint-config-airbnb": "^17.1.0",
     "eslint-config-google": "^0.10.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-standard": "^4.0.0",
     "jest": "^23.6.0",
+    "prettier": "^1.14.3",
     "supertest": "^3.3.0"
   }
 }

@@ -1,1 +1,15 @@
-{}
+{
+  "port"     : 4001,
+  "heartbeat": true,
+  "register" : true,
+  "log"      : {
+    "level": "info"
+  },
+  "api"      : {
+    "apiURL"         : "https://localhost:8080",
+    "username"       : "root@openhim.org",
+    "password"       : "ML165MN21e",
+    "trustSelfSigned": true
+  },
+  "database" : "mongodb://localhost:27017/interop-mediator"
+}
