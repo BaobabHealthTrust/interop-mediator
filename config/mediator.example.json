@@ -1,0 +1,53 @@
+{
+  "urn": "urn",
+  "version": "0.0.1",
+  "name": "mediator name",
+  "description": "mediator description",
+  "defaultChannelConfig": [
+    {
+      "name": "Channel name",
+      "urlPattern": "channel pattern",
+      "alerts": [],
+      "txRerunAcl": [],
+      "txViewFullAcl": [],
+      "txViewAcl": [],
+      "properties": [],
+      "matchContentTypes": [],
+      "routes": [
+        {
+          "name": "Route name",
+          "host": "inet",
+          "port": "port",
+          "primary": true,
+          "type": "http"
+        }
+      ],
+      "allow": [
+        "client"
+      ],
+      "type": "http"
+    }
+  ],
+  "endpoints": [
+    {
+      "name": "Name",
+      "host": "inet",
+      "path": "/",
+      "port": "port",
+      "primary": true,
+      "type": "http"
+    }
+  ],
+  "configDefs": [
+    {
+      "param": "upstreamUrl",
+      "displayName": "Upstream URL",
+      "description": "The URL of the service upstream of the mediator",
+      "type": "string",
+      "template": []
+    }
+  ],
+  "config": {
+    "upstreamUrl": "http://sampleApplication:7001"
+  }
+}

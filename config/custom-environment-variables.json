@@ -1,0 +1,16 @@
+{
+  "port": "PORT",
+  "heartbeat": "HEARTBEAT",
+  "register": "REGISTER",
+  "database": "DATABASE",
+  "port": "PORT",
+  "log": {
+    "level": "LOG_LEVEL"
+  },
+  "api": {
+    "apiURL": "API_URL",
+    "username": "API_USERNAME",
+    "password": "API_PASSWORD",
+    "trustSelfSigned": "API_TRUSTSELFSIGNED"
+  }
+}
