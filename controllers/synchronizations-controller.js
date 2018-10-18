@@ -1,31 +1,15 @@
 const { info, error } = require("winston");
 const utils = require("../lib/utils");
 const { urn } = require("../config/mediator.json");
+const OrchestrationRegister = require("../lib/OrchestrationRegister");
+const PropertiesRegister = require("../lib/PropertiesRegister");
 
 module.exports.get = async (req, res) => {
   info(`Processing ${req.method} request on ${req.url}`);
   var responseBody = { message: "put your data here" };
 
-  let orchestrations = [];
-
-  orchestrations.push({
-    name: "Get Synchronizations",
-    request: {
-      path: req.path,
-      headers: req.headers,
-      querystring: req.originalUrl.replace(req.path, ""),
-      body: JSON.stringify(req.body),
-      method: req.method,
-      timestamp: new Date().getTime()
-    },
-    response: {
-      status: 200,
-      body: JSON.stringify(responseBody),
-      timestamp: new Date().getTime()
-    }
-  });
-
-  const properties = { name: "Property value" };
+  OrchestrationRegister.add(req, responseBody, 200);
+  PropertiesRegister.add("name", "Property value");
 
   res.set("Content-Type", "application/json+openhim");
   res.send(
@@ -35,8 +19,8 @@ module.exports.get = async (req, res) => {
       200,
       {},
       JSON.stringify(responseBody),
-      orchestrations,
-      properties
+      OrchestrationRegister.orchestrations,
+      PropertiesRegister.properties
     )
   );
 };
