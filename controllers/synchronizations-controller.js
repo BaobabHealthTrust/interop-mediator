@@ -25,19 +25,18 @@ module.exports.get = async (req, res) => {
     }
   });
 
+  const properties = { name: "Property value" };
+
   res.set("Content-Type", "application/json+openhim");
-
-  const properties = { name: "Malu M. mzota" };
-
-  const r = utils.buildReturnObject(
-    urn,
-    "Successful",
-    200,
-    {},
-    JSON.stringify(responseBody),
-    orchestrations,
-    properties
+  res.send(
+    utils.buildReturnObject(
+      urn,
+      "Successful",
+      200,
+      {},
+      JSON.stringify(responseBody),
+      orchestrations,
+      properties
+    )
   );
-
-  res.send(r);
 };
