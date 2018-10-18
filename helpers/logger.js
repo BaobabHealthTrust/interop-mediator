@@ -1,10 +1,9 @@
-const { transports, configure, format, exceptions } = require('winston')
+const { transports, configure, format, exceptions } = require("winston");
 
-const console = new transports.Console({ colorize: true, prettyPrint: true })
+const console = new transports.Console({ colorize: true, prettyPrint: true });
 
-module.exports = function () {
-  const level = process.env.LOG_LEVEL
-
+module.exports = function() {
+  const level = process.env.LOG_LEVEL;
   const options = {
     level,
     format: format.combine(
@@ -14,8 +13,8 @@ module.exports = function () {
       format.simple()
     ),
     transports: [console]
-  }
+  };
 
-  configure(options)
-  exceptions.handle(console)
-}
+  configure(options);
+  exceptions.handle(console);
+};

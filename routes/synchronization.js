@@ -1,9 +1,10 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-const { synchronization } = require('../controllers')
-const { getSynchronizations } = synchronization
+const { synchronizations } = require("../controllers");
 
-router.get('/synchronizations', getSynchronizations)
+const { get } = synchronizations;
 
-module.exports = router
+router.get("/", get);
+
+module.exports = router;

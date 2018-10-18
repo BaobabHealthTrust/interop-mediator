@@ -1,5 +1,4 @@
-module.exports = {
-  logger: require('./logger'),
-  start: require('./start'),
-  database: require('./database')
-}
+module.exports.configureLogger = require("./logger");
+module.exports.configureMediator = require("./start");
+module.exports.configureDatabase = require("./database");
+module.exports.configureExpressMiddlewares = require("./middleware");

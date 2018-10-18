@@ -1,8 +1,8 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-const { migration } = require('../controllers')
+const { migrations } = require("../controllers");
 
-router.all('*', migration)
+router.all("*", migrations);
 
-module.exports = router
+module.exports = router;

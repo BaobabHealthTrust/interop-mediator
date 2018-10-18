@@ -1,40 +1,31 @@
-const { info } = require('winston')
-const express = require('express')
-const morgan = require('morgan')
+const { info } = require("winston");
+const express = require("express");
+const Joi = require("joi");
 
-require('dotenv').config()
+const app = express();
 
-const {
-  logger: configureWinston,
-  start: configureMediator,
-  database: configureDatabase
-} = require('./helpers')
+/** load environmental variables */
+require("dotenv").config();
 
-const { migration, synchronization } = require('./routes')
+/** Handle express async await errors */
+require("express-async-errors");
 
-require('express-async-errors')
+/** Add mongo object id validation to Joi */
+Joi.objectId = require("joi-objectid")(Joi);
 
+/** set up some configure */
+require("./helpers").configureLogger();
+require("./helpers").configureDatabase();
+require("./helpers").configureMediator();
 
-configureWinston()
-configureDatabase()
-configureMediator()
+/** setting middlewares*/
+require("./helpers").configureExpressMiddlewares(app);
 
-const app = express()
-
-/** setting middlewares */
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
-}
-
-// /** add routes */
-app.use('/interop-manager', synchronization)
-// app('/interop-manager', migration)
+/** add routes */
+require("./routes")(app);
 
 // /** start a server */
-const { port } = require('config')
-const server = app.listen(port, () => info(`Listening on : ${port}...`))
+const { port } = require("config") || 4001;
+const server = app.listen(port, () => info(`Listening on : ${port}...`));
 
-module.exports = server
+module.exports = server;
