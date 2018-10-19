@@ -8,36 +8,25 @@ const OrchestrationRegister = require("../lib/OrchestrationRegister");
 const PropertiesRegister = require("../lib/PropertiesRegister");
 const { Synchronization } = require("../models");
 
-module.exports.get = async (req, res) => {
-  info(`Processing ${req.method} request on ${req.url}`);
-  var responseBody = { message: "put your data here" };
-
-  OrchestrationRegister.add(req, responseBody, 200);
-  PropertiesRegister.add("name", "Property value");
-
-  res.set("Content-Type", "application/json+openhim");
-  res.send(
-    utils.buildReturnObject(
-      urn,
-      "Successful",
-      200,
-      {},
-      JSON.stringify(responseBody),
-      OrchestrationRegister.orchestrations,
-      PropertiesRegister.properties
-    )
-  );
-};
-
 module.exports.getSynchronizations = async (req, res) => {
   info(`Processing ${req.method} request on ${req.url}`);
-
   const clientId = req.client;
+
+  const selectOption = [
+    "totalFacilitiesAdded",
+    "totalFacilitiesRemoved",
+    "totalFacilitiesUpdated",
+    "synchronizationDate",
+    "isSuccessful",
+    "_id"
+  ];
+
   const synchronizations = await Synchronization.find({ clientId }).select(
     selectOption
   );
 
-  OrchestrationRegister.add(req, synchronizations, 200);
+  const message = "Get synchronizations form mongo database";
+  OrchestrationRegister.add(req, message, synchronizations, 200);
 
   PropertiesRegister.add("client", clientId);
   PropertiesRegister.add("synchronizations", synchronizations.length);
@@ -59,8 +48,7 @@ module.exports.getSynchronizations = async (req, res) => {
 module.exports.getSynchronization = async (req, res) => {
   info(`Processing ${req.method} request on ${req.url}`);
 
-  const clientId = req.get("x-openhim-clientid");
-  const orchestrations = [];
+  const clientId = req.client;
 
   const schema = Joi.object().keys({ id: Joi.objectId().required() });
   const { error } = Joi.validate(req.params, schema);
@@ -70,9 +58,12 @@ module.exports.getSynchronization = async (req, res) => {
   const synchronization = await Synchronization.findById(req.params.id);
   if (!synchronization) return res.status(404).send(message);
 
-  const responseBody = synchronization;
-
-  res.set("Content-Type", "application/json+openhim");
+  OrchestrationRegister.add(
+    req,
+    "Get a synchronization from the database",
+    synchronization,
+    200
+  );
 
   const {
     totalFacilitiesAdded = 0,
@@ -83,27 +74,23 @@ module.exports.getSynchronization = async (req, res) => {
     facilities = []
   } = synchronization;
 
-  const properties = {
-    clientId,
-    isSuccessful,
-    synchronizationDate,
-    totalFacilitiesAdded,
-    totalFacilitiesUpdated,
-    totalFacilitiesRemoved,
-    facilities: facilities.length
-  };
+  PropertiesRegister.add("client", clientId);
+  PropertiesRegister.add("Status", isSuccessful);
+  PropertiesRegister.add("Synchronization Date", synchronizationDate);
+  PropertiesRegister.add("Total Facilities Added", totalFacilitiesAdded);
+  PropertiesRegister.add("Total Facilities Updated", totalFacilitiesUpdated);
+  PropertiesRegister.add("Total Facilities Removed", totalFacilitiesRemoved);
 
-  info(`Response: [${res.statusCode}] ${responseBody}`);
-
+  res.set("Content-Type", "application/json+openhim");
   res.send(
     utils.buildReturnObject(
       urn,
       "Successful",
       200,
       {},
-      responseBody,
-      orchestrations,
-      properties
+      JSON.stringify(synchronization),
+      OrchestrationRegister.orchestrations,
+      PropertiesRegister.properties
     )
   );
 };
@@ -125,7 +112,7 @@ module.exports.addSynchronization = async (req, res) => {
   };
 
   const facilitiesSchema = Joi.object().keys({
-    name: Joi.object().keys(facilityFieldStringValidation),
+    Name: Joi.object().keys(facilityFieldStringValidation),
     CommonName: Joi.object().keys(facilityFieldStringValidation),
     Code: Joi.object().keys(facilityFieldStringValidation),
     OperationalStatus: Joi.object().keys(facilityFieldStringValidation),
@@ -173,8 +160,13 @@ module.exports.addSynchronization = async (req, res) => {
   );
   synchronization.clientId = clientId;
   await synchronization.save();
-  const responseBody = synchronization;
-  res.set("Content-Type", "application/json+openhim");
+
+  OrchestrationRegister.add(
+    req,
+    "Added a sync in the database",
+    synchronization,
+    200
+  );
 
   const {
     totalFacilitiesAdded = 0,
@@ -185,27 +177,23 @@ module.exports.addSynchronization = async (req, res) => {
     facilities = []
   } = synchronization;
 
-  const properties = {
-    clientId,
-    isSuccessful,
-    synchronizationDate,
-    totalFacilitiesAdded,
-    totalFacilitiesUpdated,
-    totalFacilitiesRemoved,
-    facilities: facilities.length
-  };
+  PropertiesRegister.add("client", clientId);
+  PropertiesRegister.add("Status", isSuccessful);
+  PropertiesRegister.add("Synchronization Date", synchronizationDate);
+  PropertiesRegister.add("Total Facilities Added", totalFacilitiesAdded);
+  PropertiesRegister.add("Total Facilities Updated", totalFacilitiesUpdated);
+  PropertiesRegister.add("Total Facilities Removed", totalFacilitiesRemoved);
 
-  info(`Response: [${res.statusCode}] ${responseBody}`);
-
+  res.set("Content-Type", "application/json+openhim");
   res.send(
     utils.buildReturnObject(
       urn,
       "Successful",
       200,
       {},
-      responseBody,
-      orchestrations,
-      properties
+      JSON.stringify(synchronization),
+      OrchestrationRegister.orchestrations,
+      PropertiesRegister.properties
     )
   );
 };

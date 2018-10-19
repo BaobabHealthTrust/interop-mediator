@@ -3,6 +3,7 @@ const { info, error } = require("winston");
 const { errorHandler } = require("../middleware");
 const migration = require("./migration");
 const synchronization = require("./synchronization");
+const changedFacilities = require("./changedFacilities");
 
 module.exports = (app = null) => {
   if (!app) {
@@ -11,6 +12,7 @@ module.exports = (app = null) => {
   }
 
   app.use("/interop-manager/synchronizations", synchronization);
+  app.use("/interop-manager/changedFacilities", changedFacilities);
   app.use("/interop-manager/migration", migration);
 
   /**

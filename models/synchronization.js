@@ -18,7 +18,7 @@ const customGenericDateType = {
 };
 
 const synchronizationFacilitiesFields = {
-  name: customGenericStringType,
+  Name: customGenericStringType,
   CommonName: customGenericStringType,
   Code: customGenericStringType,
   OperationalStatus: customGenericStringType,
