@@ -3,8 +3,14 @@ const router = express.Router();
 
 const { synchronizations } = require("../controllers");
 
-const { get } = synchronizations;
+const {
+  getSynchronizations,
+  getSynchronization,
+  addSynchronization
+} = synchronizations;
 
-router.get("/", get);
+router.get("/", getSynchronizations);
+router.get("/:id", getSynchronization);
+router.post("/", addSynchronization);
 
 module.exports = router;

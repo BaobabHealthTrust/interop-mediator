@@ -1,4 +1,4 @@
 module.exports = {
-  Migration: require('./migration'),
-  Synchronization: require('./synchronization')
-}
+  Migration: require("./migration"),
+  Synchronization: require("./Synchronization")
+};
