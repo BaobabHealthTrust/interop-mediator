@@ -102,13 +102,13 @@ module.exports.addSynchronization = async (req, res) => {
   const orchestrations = [];
 
   const facilityFieldStringValidation = {
-    previousValue: Joi.string().required(),
-    newValue: Joi.string().required()
+    previousValue: Joi.string().allow(null).required(),
+    newValue: Joi.string().allow(null).required()
   };
 
   const facilityFieldDateValidation = {
-    previousValue: Joi.date().required(),
-    newValue: Joi.date().required()
+    previousValue: Joi.date().allow(null).required(),
+    newValue: Joi.date().allow(null).required()
   };
 
   const facilitiesSchema = Joi.object().keys({
@@ -123,7 +123,7 @@ module.exports.addSynchronization = async (req, res) => {
     OpenLMISCode: Joi.object().keys(facilityFieldStringValidation),
     District: Joi.object().keys(facilityFieldStringValidation),
     Zone: Joi.object().keys(facilityFieldStringValidation),
-    isCreated: Joi.boolean().required(),
+    isNew: Joi.boolean().required(),
     isRemoved: Joi.boolean().required()
   });
 
