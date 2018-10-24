@@ -15,6 +15,6 @@ const { idSchema, addSchema } = synchronizationSchema
 
 router.get("/", logger, getSynchronizations);
 router.get("/:id", [ validateParamId, logger ], getSynchronization);
-router.post("/",[logger] , addSynchronization);
+router.post("/",[logger, validation(synchronizationSchema) ] , addSynchronization);
 
 module.exports = router;
