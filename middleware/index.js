@@ -2,3 +2,4 @@ module.exports.errorHandler = require("./error_handler");
 module.exports.client = require("./client_id");
 module.exports.validation = require("./validatation");
 module.exports.logger = require('./logger')
+module.exports.validateParamId = require('./validateId')
