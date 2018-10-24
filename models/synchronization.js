@@ -29,7 +29,7 @@ const synchronizationFacilitiesFields = {
   OpenLMISCode: customGenericStringType,
   District: customGenericStringType,
   Zone: customGenericStringType,
-  isCreated: Boolean,
+  isRecent: Boolean,
   isRemoved: Boolean
 };
 

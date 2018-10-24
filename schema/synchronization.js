@@ -1,13 +1,21 @@
 const Joi = require("joi");
 
 const facilityFieldStringValidation = {
-  previousValue: Joi.string().allow(null).required(),
-  newValue: Joi.string().allow(null).required()
+  previousValue: Joi.string()
+    .allow(null)
+    .required(),
+  newValue: Joi.string()
+    .allow(null)
+    .required()
 };
 
 const facilityFieldDateValidation = {
-  previousValue: Joi.date().allow(null).required(),
-  newValue: Joi.date().allow(null).required()
+  previousValue: Joi.date()
+    .allow(null)
+    .required(),
+  newValue: Joi.date()
+    .allow(null)
+    .required()
 };
 
 const facilitiesSchema = Joi.object().keys({
@@ -22,14 +30,24 @@ const facilitiesSchema = Joi.object().keys({
   OpenLMISCode: Joi.object().keys(facilityFieldStringValidation),
   District: Joi.object().keys(facilityFieldStringValidation),
   Zone: Joi.object().keys(facilityFieldStringValidation),
-  isNew: Joi.boolean().required(),
+  isRecent: Joi.boolean().required(),
   isRemoved: Joi.boolean().required()
 });
 
 module.exports = Joi.object().keys({
-  totalFacilitiesAdded: Joi.number().positive().required(),
-  totalFacilitiesRemoved: Joi.number().positive().required(),
-  totalFacilitiesUpdated: Joi.number().positive().required(),
-  isSuccessful: Joi.boolean().valid([true, false]).required(),
-  facilities: Joi.array().items(facilitiesSchema).required()
+  totalFacilitiesAdded: Joi.number()
+    .positive()
+    .required(),
+  totalFacilitiesRemoved: Joi.number()
+    .positive()
+    .required(),
+  totalFacilitiesUpdated: Joi.number()
+    .positive()
+    .required(),
+  isSuccessful: Joi.boolean()
+    .valid([true, false])
+    .required(),
+  facilities: Joi.array()
+    .items(facilitiesSchema)
+    .required()
 });
