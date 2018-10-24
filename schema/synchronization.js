@@ -26,9 +26,7 @@ const facilitiesSchema = Joi.object().keys({
   isRemoved: Joi.boolean().required()
 });
 
-module.exports.idSchema = Joi.object().keys({ id: Joi.objectId().required() });
-
-module.exports.addSchema = Joi.object().keys({
+module.exports = Joi.object().keys({
   totalFacilitiesAdded: Joi.number().positive().required(),
   totalFacilitiesRemoved: Joi.number().positive().required(),
   totalFacilitiesUpdated: Joi.number().positive().required(),
