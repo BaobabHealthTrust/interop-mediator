@@ -21,8 +21,6 @@ module.exports.getSynchronizations = async (req, res) => {
   ];
 
   const syncs = await Sync.find({ clientId }).select(selectOption);
-  return res.send(syncs) // to be removed
-
   const OrchestrationMessage = "Get synchronizations form mongo database";
   OrchestrationRegister.add(req, OrchestrationMessage, syncs, 200);
 
@@ -52,8 +50,6 @@ module.exports.getSynchronization = async (req, res) => {
     error(errorMessage);
     return res.status(404).send(errorMessage);
   }
-
-  return res.send(sync)
 
   const OrchestrationMessage = "Get a synchronization form mongo database";
   OrchestrationRegister.add(req, OrchestrationMessage, sync, 200);
@@ -102,8 +98,6 @@ module.exports.addSynchronization = async (req, res) => {
   const sync = new Sync(_.pick(req.body, pickOptions));
   sync.clientId = clientId;
   await sync.save();
-
-  return res.send(sync)
 
   OrchestrationRegister.add(req, "Added a sync in the database", sync, 200);
 
