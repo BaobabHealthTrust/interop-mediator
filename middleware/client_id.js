@@ -1,7 +1,7 @@
 const { error } = require("winston");
 
 module.exports = (req, res, next) => {
-  const client = req.get("x-openhim-clientid");
+  const client = req.get("x-openhim-clientid") || req.get("x-client")
 
   if (!client) {
     error("OpenHIM client ID is required.");

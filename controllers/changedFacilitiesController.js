@@ -67,6 +67,8 @@ module.exports = async (req, res) => {
     response = responseDataArray;
   }
 
+  return res.send(response)
+
   const message = "Get Last synchronizations form database";
   OrchestrationRegister.add(req, message, response, 200);
 
