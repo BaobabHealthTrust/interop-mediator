@@ -107,6 +107,7 @@ const queryBuilder = (startDate = new Date("01.01.1970")) => {
   const query = {
     where: {
       updated_at: { gte: startDate, lte: new Date() },
+      facility_code_dhis2: { neq: null },
       archived_date: null
     },
     include: ["regulatoryStatus", "operationalStatus", { district: "zone" }]
