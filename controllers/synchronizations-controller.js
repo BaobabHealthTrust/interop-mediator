@@ -28,7 +28,8 @@ module.exports.getSynchronizations = async (req, res) => {
   PropertiesRegister.add("synchronizations", syncs.length);
 
   res.set("Content-Type", "application/json+openhim");
-  res.send(
+  
+ res.send(
     utils.buildReturnObject(
       urn,
       "Successful",

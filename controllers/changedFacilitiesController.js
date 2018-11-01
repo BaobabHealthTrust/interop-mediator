@@ -11,7 +11,6 @@ const { changedFacilities } = require("../helpers");
 
 module.exports = async (req, res) => {
   const clientId = req.client;
-
   const {
     queryBuilder,
     queryMHFRFacilities,
@@ -67,7 +66,7 @@ module.exports = async (req, res) => {
     response = responseDataArray;
   }
 
-  return res.send(response)
+ // return res.send(response)
 
   const message = "Get Last synchronizations form database";
   OrchestrationRegister.add(req, message, response, 200);

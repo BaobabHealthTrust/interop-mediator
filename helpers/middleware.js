@@ -12,10 +12,9 @@ module.exports = (app = null) => {
 
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: false }));
-
+  
   if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
   }
-
   app.use(client);
 };
