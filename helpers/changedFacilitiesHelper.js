@@ -120,6 +120,7 @@ module.exports.queryBuilder = queryBuilder;
 module.exports.queryMHFRFacilities = async (query = null) => {
   if (!query) query = queryBuilder();
   const MHFR_URL = `${process.env.MFL_API_URL}/api/Facilities?filter=${query}`;
+console.log(MHFR_URL)
   const response = await request.get(MHFR_URL).catch(err => error(err));
   const { data: facilities = [] } = response;
   return facilities;

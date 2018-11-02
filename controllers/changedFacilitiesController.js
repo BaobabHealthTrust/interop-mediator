@@ -36,6 +36,7 @@ module.exports = async (req, res) => {
     response = MHFRFacilities.map(prepareMHFRFacility);
     response = response.filter(facility => facility !== null);
 
+    console.log(query)
     const responseDataArray = [];
 
     for (let res of response) {
