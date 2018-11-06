@@ -97,6 +97,8 @@ module.exports.buildReturnFacility = (f, fac) => {
       previousValue: fac.OpenLMISCode.newValue,
       newValue: f.OpenLMISCode.newValue
     },
+    District: { previousValue: fac.District.newValue, newValue: f.District.newValue },
+    Zone: { previousValue: fac.Zone.newValue, newValue: f.Zone.newValue },
     isRecent: false,
     isRemoved: false
   };

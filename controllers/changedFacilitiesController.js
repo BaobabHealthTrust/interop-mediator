@@ -36,7 +36,6 @@ module.exports = async (req, res) => {
     response = MHFRFacilities.map(prepareMHFRFacility);
     response = response.filter(facility => facility !== null);
 
-    console.log(query)
     const responseDataArray = [];
 
     for (let res of response) {
@@ -55,11 +54,12 @@ module.exports = async (req, res) => {
           responseData = buildReturnFacility(res, oldFacility);
         } else {
           responseData = prepareLastSyncFacilities(res);
+          responseData = buildReturnFacility(res,oldFacility)
         }
         responseDataArray.push(responseData);
       } else {
-        let responseData = prepareLastSyncFacilities(res);
-        response.isRecent = true;
+        let responseData = res;
+        responseData.isRecent = true;
         responseDataArray.push(responseData);
       }
     }

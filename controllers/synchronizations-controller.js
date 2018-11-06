@@ -20,7 +20,7 @@ module.exports.getSynchronizations = async (req, res) => {
     "_id"
   ];
 
-  const syncs = await Sync.find({ clientId }).select(selectOption);
+  const syncs = await Sync.find({ clientId }).select(selectOption).sort({'synchronizationDate': 'desc'});
   const OrchestrationMessage = "Get synchronizations form mongo database";
   OrchestrationRegister.add(req, OrchestrationMessage, syncs, 200);
 
