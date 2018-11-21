@@ -1,46 +1,26 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
 
-const genericStringType = { type: String, required: true };
-const genericNumberType = { type: Number, required: true };
-const genericDateType = { type: Date, default: Date.now };
+const Schema = mongoose.Schema
 
-const customGenericStringType = {
-  type: { type: String, default: "String" },
-  previousValue: String,
-  newValue: String
-};
+const {
+  syncSubDoc: facilities,
+  types
+} = require('./helpers')
 
-const customGenericDateType = {
-  type: { type: String, default: "Date" },
-  previousValue: Date,
-  newValue: Date
-};
-
-const synchronizationFacilitiesFields = {
-  Name: customGenericStringType,
-  CommonName: customGenericStringType,
-  Code: customGenericStringType,
-  OperationalStatus: customGenericStringType,
-  RegulatoryStatus: customGenericStringType,
-  DateOpened: customGenericDateType,
-  LastUpdated: customGenericDateType,
-  DHIS2Code: customGenericStringType,
-  OpenLMISCode: customGenericStringType,
-  District: customGenericStringType,
-  Zone: customGenericStringType,
-  isRecent: Boolean,
-  isRemoved: Boolean
-};
+const {
+  Number,
+  Date,
+  String
+} = types
 
 const synchronizationSchema = new Schema({
-  totalFacilitiesAdded: genericNumberType,
-  totalFacilitiesRemoved: genericNumberType,
-  totalFacilitiesUpdated: genericNumberType,
-  synchronizationDate: genericDateType,
-  clientId: genericStringType,
+  totalFacilitiesAdded: Number,
+  totalFacilitiesRemoved: Number,
+  totalFacilitiesUpdated: Number,
+  synchronizationDate: Date,
+  clientId: String,
   isSuccessful: Boolean,
-  facilities: [synchronizationFacilitiesFields]
-});
+  facilities: [facilities]
+})
 
-module.exports = mongoose.model("Synchronization", synchronizationSchema);
+module.exports = mongoose.model('Synchronization', synchronizationSchema)
