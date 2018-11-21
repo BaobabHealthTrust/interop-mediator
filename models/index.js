@@ -1,6 +1,4 @@
-module.exports = {
-  Migration: require("./migration"),
-  Synchronization: require("./synchronization"),
-  OrganizationUnits: require("./orgunits.js"),
-  ArtDataElements: require("./artdataelements")
-};
+module.exports.Migration = require('./migration')
+module.exports.Synchronization = require('./synchronization')
+module.exports.OrganizationUnits = require('./orgunits.js')
+module.exports.ArtDataElements = require('./artdataelements')
