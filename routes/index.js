@@ -1,25 +1,25 @@
-const { info, error } = require("winston");
+const { info, error } = require('winston')
 
-const { errorHandler } = require("../middleware");
-const migration = require("./migration");
-const synchronization = require("./synchronization");
-const changedFacilities = require("./changedFacilities");
+const { errorHandler } = require('../middleware')
+const migration = require('./migration')
+const synchronization = require('./synchronization')
+const changedFacilities = require('./changedFacilities')
 
 module.exports = (app = null) => {
   if (!app) {
-    error("Failed to create mediator routes");
-    return;
+    error('Failed to create mediator routes')
+    return
   }
 
-  app.use("/interop-manager/synchronizations", synchronization);
-  app.use("/interop-manager/changedFacilities", changedFacilities);
-  app.use("/interop-manager/migration", migration);
+  app.use('/interop-manager/synchronizations', synchronization)
+  app.use('/interop-manager/changedFacilities', changedFacilities)
+  app.use('/interop-manager/migrations', migration)
 
   /**
    * error handler
    * It should be the last route
    */
-  app.use(errorHandler);
+  app.use(errorHandler)
 
-  info("routers successfully set");
-};
+  info('routers successfully set')
+}

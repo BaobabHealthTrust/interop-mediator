@@ -1,8 +1,13 @@
-const express = require("express");
-const router = express.Router();
+const express = require('express')
 
-const { migrations } = require("../controllers");
+const router = express.Router()
 
-router.all("*", migrations);
+const { getOpenLMISMigrations, addOpenLMISMigrations } = require('../controllers').migrations
+const { logger, validation } = require('../middleware')
 
-module.exports = router;
+const { migrationSchema } = require('../schema')
+
+router.get('/openlmis', logger, getOpenLMISMigrations)
+router.post('/openlmis', logger, validation(migrationSchema), addOpenLMISMigrations)
+
+module.exports = router

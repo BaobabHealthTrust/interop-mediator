@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require('joi')
 
 const facilityFieldStringValidation = {
   previousValue: Joi.string()
@@ -7,7 +7,7 @@ const facilityFieldStringValidation = {
   newValue: Joi.string()
     .allow(null)
     .required()
-};
+}
 
 const facilityFieldDateValidation = {
   previousValue: Joi.date()
@@ -16,7 +16,7 @@ const facilityFieldDateValidation = {
   newValue: Joi.date()
     .allow(null)
     .required()
-};
+}
 
 const facilitiesSchema = Joi.object().keys({
   Name: Joi.object().keys(facilityFieldStringValidation),
@@ -32,7 +32,7 @@ const facilitiesSchema = Joi.object().keys({
   Zone: Joi.object().keys(facilityFieldStringValidation),
   isRecent: Joi.boolean().required(),
   isRemoved: Joi.boolean().required()
-});
+})
 
 module.exports = Joi.object().keys({
   totalFacilitiesAdded: Joi.number()
@@ -50,4 +50,4 @@ module.exports = Joi.object().keys({
   facilities: Joi.array()
     .items(facilitiesSchema)
     .required()
-});
+})

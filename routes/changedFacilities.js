@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const { changedFacilitiesController } = require("../controllers");
+const { changedFacilitiesController } = require('../controllers')
 
-router.get("/", changedFacilitiesController);
+router.get('/', changedFacilitiesController)
 
-module.exports = router;
+module.exports = router
