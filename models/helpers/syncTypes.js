@@ -4,10 +4,7 @@ module.exports.genericString = {
     default: 'String'
   },
   previousValue: String,
-  newValue: {
-    type: String,
-    required: true
-  }
+  newValue: String
 }
 
 module.exports.genericDate = {
@@ -16,8 +13,5 @@ module.exports.genericDate = {
     default: 'Date'
   },
   previousValue: Date,
-  newValue: {
-    type: Date,
-    required: true
-  }
+  newValue: Date
 }

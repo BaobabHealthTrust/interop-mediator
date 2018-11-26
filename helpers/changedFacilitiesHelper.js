@@ -1,5 +1,5 @@
-const request = require("axios");
-const { info, error } = require("winston");
+const request = require('axios')
+const { info, error } = require('winston')
 
 module.exports.prepareLastSyncFacilities = facility => ({
   Name: facility.Name.newValue,
@@ -15,10 +15,10 @@ module.exports.prepareLastSyncFacilities = facility => ({
   Zone: facility.Zone.newValue,
   isRecent: facility.isRecent,
   isRemoved: facility.isRemoved
-});
+})
 
 module.exports.prepareMHFRFacility = (facility = null) => {
-  if (!facility) return null;
+  if (!facility) return null
   const {
     facility_code: Code = null,
     facility_code_dhis2: DHIS2Code = null,
@@ -31,17 +31,17 @@ module.exports.prepareMHFRFacility = (facility = null) => {
     regulatoryStatus = null,
     operationalStatus = null,
     district = null
-  } = facility;
+  } = facility
 
-  const District = district.district_name;
-  const Zone = district.zone.zone_name;
+  const District = district.district_name
+  const Zone = district.zone.zone_name
   const {
     facility_regulatory_status: RegulatoryStatus = null
-  } = regulatoryStatus;
+  } = regulatoryStatus
 
   const {
     facility_operational_status: OperationalStatus = null
-  } = operationalStatus;
+  } = operationalStatus
 
   const formattedFacility = {
     Name: { previousValue: null, newValue: Name },
@@ -57,10 +57,10 @@ module.exports.prepareMHFRFacility = (facility = null) => {
     Zone: { previousValue: null, newValue: Zone },
     isRecent: false,
     isRemoved: false
-  };
+  }
 
-  return formattedFacility;
-};
+  return formattedFacility
+}
 
 module.exports.buildReturnFacility = (f, fac) => {
   const formattedFacility = {
@@ -101,29 +101,36 @@ module.exports.buildReturnFacility = (f, fac) => {
     Zone: { previousValue: fac.Zone.newValue, newValue: f.Zone.newValue },
     isRecent: false,
     isRemoved: false
-  };
-  return formattedFacility;
-};
+  }
+  return formattedFacility
+}
 
-const queryBuilder = (startDate = new Date("01.01.1970")) => {
+const queryBuilder = (startDate = new Date('01.01.1970')) => {
   const query = {
     where: {
       updated_at: { gte: startDate, lte: new Date() },
       facility_code_dhis2: { neq: null },
       archived_date: null
     },
-    include: ["regulatoryStatus", "operationalStatus", { district: "zone" }]
-  };
-  return JSON.stringify(query);
-};
+    include: ['regulatoryStatus', 'operationalStatus', { district: 'zone' }]
+  }
+  return JSON.stringify(query)
+}
 
-module.exports.queryBuilder = queryBuilder;
+module.exports.queryBuilder = queryBuilder
 
 module.exports.queryMHFRFacilities = async (query = null) => {
-  if (!query) query = queryBuilder();
-  const MHFR_URL = `${process.env.MFL_API_URL}/api/Facilities?filter=${query}`;
-console.log(MHFR_URL)
-  const response = await request.get(MHFR_URL).catch(err => error(err));
-  const { data: facilities = [] } = response;
-  return facilities;
-};
+  if (!query) query = queryBuilder()
+  const MHFR_URL = `${process.env.MFL_API_URL}/api/Facilities?filter=${query}`
+  const response = await request.get(MHFR_URL).catch(err => error(err))
+  const { data: facilities = [] } = response
+  return facilities
+}
+
+module.exports.queryMHFRArchievedFacilities = async (date) => {
+  const period = JSON.stringify({ date })
+  const MHFR_URL = `${process.env.MFL_API_URL}/api/Facilities/archived?date=${period}`
+  const response = await request.get(MHFR_URL).catch(err => error(err))
+  const { data: facilities = [] } = response
+  return facilities
+}
