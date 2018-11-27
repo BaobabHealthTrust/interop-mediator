@@ -1,5 +1,6 @@
 const Joi = require('joi')
 
 module.exports = Joi.object().keys({
-  period: Joi.string().min(7).required()
+  quarter: Joi.number().valid(1, 2, 3, 4).required(),
+  year: Joi.number().required()
 })

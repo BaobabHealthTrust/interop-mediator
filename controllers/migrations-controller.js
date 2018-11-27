@@ -3,6 +3,7 @@ const utils = require('../lib/utils')
 const { urn } = require('../config/mediator.json')
 const OrchestrationRegister = require('../lib/OrchestrationRegister')
 const PropertiesRegister = require('../lib/PropertiesRegister')
+const { engine } = require('../helpers')
 
 module.exports.getOpenLMISMigrations = async (req, res) => {
   const clientId = req.client
@@ -37,17 +38,14 @@ module.exports.getOpenLMISMigrations = async (req, res) => {
 
 module.exports.addOpenLMISMigrations = async (req, res) => {
   const clientId = req.client
+  const { quarter, year } = req.body
 
-  /**
-   *  1. DHAMIS calls
-   *  2. ENGINE calls
-   */
-
+  const migrationData = await engine(quarter, year)
   const successfulRecords = 0
   const failedRecords = 0
 
   const props = {
-    period: req.body.period,
+    period: `Q${quarter} ${year}`,
     successful_records: successfulRecords,
     failed_records: failedRecords
   }
