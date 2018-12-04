@@ -8,7 +8,7 @@ const { engine } = require('../helpers')
 module.exports.getOpenLMISMigrations = async (req, res) => {
   const clientId = req.client
 
-  const migrations = await Migration.find({}).sort({ 'synchronizationDate': 'desc' })
+  const migrations = await Migration.find({}).sort({ 'migration_date': 'desc' })
   const OrchestrationMessage = 'Get migrations form the mediator database'
   OrchestrationRegister.add(req, OrchestrationMessage, migrations, 200)
 
@@ -31,7 +31,8 @@ module.exports.getOpenLMISMigrations = async (req, res) => {
       {},
       JSON.stringify(migrations),
       orchestrations,
-      properties
+      properties,
+      req
     )
   )
 }
@@ -40,7 +41,8 @@ module.exports.addOpenLMISMigrations = async (req, res) => {
   const clientId = req.client
   const { quarter, year } = req.body
 
-  const migrationData = await engine(quarter, year)
+  engine(quarter, year)
+
   const successfulRecords = 0
   const failedRecords = 0
 
@@ -51,6 +53,7 @@ module.exports.addOpenLMISMigrations = async (req, res) => {
   }
 
   const migration = new Migration(props)
+
   await migration.save()
 
   const orchMessage = 'Added a migration in the database'
@@ -79,7 +82,8 @@ module.exports.addOpenLMISMigrations = async (req, res) => {
       {},
       JSON.stringify(migration),
       orchestrations,
-      properties
+      properties,
+      req
     )
   )
 }

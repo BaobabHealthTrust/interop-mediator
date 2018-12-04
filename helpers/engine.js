@@ -5,8 +5,6 @@ const winston = require('winston')
 const { OrganizationUnits, ArtDataElements } = require('../models')
 
 const getDhamisData = async (quarter, year) => {
-  // TODO: remove
-  console.log('reached here dude 1')
   const url = process.env.DHAMIS_API_URL
   const apiKey = process.env.DHAMIS_API_KEY
   const dhamisPeriodData = (await axios.get(`${url}/api/quarters/${apiKey}`)).data
@@ -17,27 +15,25 @@ const getDhamisData = async (quarter, year) => {
   }
   const artRegistrations = (await axios.get(`${url}/api/artclinic/get/${apiKey}/${id}`)).data
   const hccRegistrations = (await axios.get(`${url}/api/hivcareclinic/get/${apiKey}/${id}`)).data
+  const primaryAndSecondaryOutcomes = (await axios.get(`${url}/api/artoutcomesprimarysecondary/get/${apiKey}/${id}`)).data
 
-  // TODO: remove
-  console.log('reached here dude')
-
-  return [
+  const data = [
     ...artRegistrations,
-    ...hccRegistrations
+    ...hccRegistrations,
+    ...primaryAndSecondaryOutcomes
   ]
+  console.log('tranferring logic to dhis2')
+  console.log(data.length)
+  return data
 }
 
 const getDhisDataElements = async () => ArtDataElements.find({})
 
 const getOrgUnits = async () => OrganizationUnits.find({})
 
-// TODO: remove at some point
-// const terminate = data => {
-//   console.log(data)
-//   process.exit()
-// }
-
-const log = (data) => { console.log('') }
+const postPayLoad = async (payload) => {
+  console.log(payload)
+}
 
 const engine = async (quarter, year) => {
   const period = `${year}Q${quarter}`
@@ -45,20 +41,17 @@ const engine = async (quarter, year) => {
   const dataValues = await getDhamisData(quarter, year)
   const orgUnits = await getOrgUnits()
 
-  // TODO: remove at some point
-  console.log(dataValues.length)
-
   const dataSet = 'mLAtASimykI'
   const username = 'administrator'
   // const password = 'adminpassword'
   // const url = 'http://testdhis.kuunika.org:8080/training/api/dataValueSets'
-  const date = moment(Date.now()).format('Y-m-d')
+  const date = moment(Date.now()).format('Y-M-D')
 
   const orgUnitsMap = {}
 
   orgUnits.forEach(orgUnit => {
-    orgUnitsMap[_.trim(orgUnit.name)] = {
-      orgunitid: orgUnit.id
+    orgUnitsMap[_.trim(orgUnit.DHAMISName)] = {
+      orgunitid: orgUnit.DHIS2Id
     }
   })
 
@@ -68,9 +61,9 @@ const engine = async (quarter, year) => {
 
   dataElements.forEach(dataElement => {
     const code = dataElement['Code']
-    dataElementIdMap[code] = dataElement['Data Element ID']
-    categoryComboIdMap[code] = dataElement['Category ID']
-    attributeIdMap[code] = dataElement['Attribute ID']
+    dataElementIdMap[code] = dataElement['DataElementID']
+    categoryComboIdMap[code] = dataElement['CategoryID']
+    attributeIdMap[code] = dataElement['AttributeID']
   })
 
   const orgUnitIdentifier = {
@@ -79,7 +72,7 @@ const engine = async (quarter, year) => {
   }
 
   dataValues.forEach(async dataValue => {
-    const orgUnitIdentifierName = dataValue['Site']
+    const orgUnitIdentifierName = dataValue['site']
     if (orgUnitIdentifierName) {
       // TODO: ask Nthezemu if key is right
       orgUnitIdentifier['orgunitidentifiername'] = orgUnitIdentifierName
@@ -94,12 +87,12 @@ const engine = async (quarter, year) => {
     if (!orgUnitId) return
 
     const dataElementCode = _.trim(dataValue['ID'])
-    const dataElementType = _.trim(dataValue['Reporting period'])
+    const dataElementType = _.trim(dataValue['reporting_period'])
     // const facilityName = _.trim(dataValue['Site'])
     const value = _.replace(_.trim(dataValue['data_value']), ',', '')
 
     const dataElementTypeIdentifier =
-      dataElementType === 'Cummulative'
+      dataElementType === 'Cumulative'
         ? dataElementCode + '-c'
         : dataElementCode + '-q'
 
@@ -127,7 +120,7 @@ const engine = async (quarter, year) => {
         storedBy: username
       }
     }
-    log(payload)
   })
+  postPayLoad(dataValues.length)
 }
 module.exports = engine

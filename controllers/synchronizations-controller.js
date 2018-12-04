@@ -28,7 +28,6 @@ module.exports.getSynchronizations = async (req, res) => {
   PropertiesRegister.add('synchronizations', syncs.length)
 
   res.set('Content-Type', 'application/json+openhim')
-
   res.send(
     utils.buildReturnObject(
       urn,
@@ -37,7 +36,8 @@ module.exports.getSynchronizations = async (req, res) => {
       {},
       JSON.stringify(syncs),
       OrchestrationRegister.orchestrations,
-      PropertiesRegister.properties
+      PropertiesRegister.properties,
+      req
     )
   )
 }
@@ -80,7 +80,8 @@ module.exports.getSynchronization = async (req, res) => {
       {},
       JSON.stringify(sync),
       OrchestrationRegister.orchestrations,
-      PropertiesRegister.properties
+      PropertiesRegister.properties,
+      req
     )
   )
 }
@@ -124,7 +125,8 @@ module.exports.addSynchronization = async (req, res) => {
       {},
       JSON.stringify(sync),
       orchestrations,
-      properties
+      properties,
+      req
     )
   )
 }
