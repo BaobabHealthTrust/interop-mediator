@@ -39,6 +39,7 @@
     "express": "^4.16.3",
     "express-async-errors": "^3.0.0",
     "express-remove-route": "^1.0.0",
+    "firebase-admin": "^6.3.0",
     "graceful-fs": "^4.1.11",
     "joi": "^13.7.0",
     "joi-objectid": "^2.0.0",
