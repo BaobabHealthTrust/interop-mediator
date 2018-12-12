@@ -1,0 +1,36 @@
+const firebaseAdmin = require('firebase-admin')
+
+firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+  }),
+  databaseURL: process.env.FIREBASE_DATABASE_URL
+})
+
+const db = firebaseAdmin.firestore()
+
+const dhamisProgress = db.collection('dhamis').doc('progress')
+const dhamisPercentage = db.collection('dhamis').doc('percentage')
+const dhamisRecords = db.collection('dhamis').doc('records')
+
+const dhamisLog = (state) => {
+  dhamisProgress.set({
+    state
+  })
+}
+
+const resetNotifications = () => {
+  dhamisProgress.set({ state: '' })
+  dhamisPercentage.set({ state: 0 })
+  dhamisRecords.set({ state: '' })
+}
+
+module.exports = {
+  dhamisPercentage,
+  dhamisProgress,
+  dhamisRecords,
+  dhamisLog,
+  resetNotifications
+}
