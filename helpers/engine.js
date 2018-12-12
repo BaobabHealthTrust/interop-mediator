@@ -50,7 +50,6 @@ const postPayLoad = async (payload) => {
   const username = 'haroontwalibu'
   const password = 'Mamelodi@19'
   const url = 'http://testdhis.kuunika.org:1414/dhis/api/dataValueSets'
-  console.log(payload)
   try {
     await axios({
       method: 'post',
@@ -63,7 +62,7 @@ const postPayLoad = async (payload) => {
         'Content-Type': 'application/json'
       },
       data: payload
-    }).then(data => console.log(data))
+    }).then(data => console.log(data.data.description))
   } catch (err) {
     console.log(err)
   }
@@ -73,12 +72,11 @@ const engine = async (quarter, year) => {
   const period = `${year}Q${quarter}`
   const dataElements = await getDhisDataElements()
   const dataValues = await getDhamisData(quarter, year)
+  console.log(dataValues)
   const orgUnits = await getOrgUnits()
 
   const dataSet = 'mLAtASimykI'
   const username = 'haroontwalibu'
-  const password = 'Mamelodi@19'
-  const url = 'http://testdhis.kuunika.org:1414/dhis/api/dataValueSets'
   const date = moment(Date.now()).format('Y-M-D')
 
   const orgUnitsMap = {}
@@ -104,11 +102,10 @@ const engine = async (quarter, year) => {
     orgunitidentifiername: '',
     orgunitidentifiercode: ''
   }
-  console.log('migrating...')
   let counter = 0
   for (const dataValue of dataValues) {
     dhamisProgress.set({
-      progress: `${counter + 1}:${dataValues.length}`,
+      progress: `Migrating ${counter + 1} of ${dataValues.length}`,
       percentage: Math.floor((counter / dataValues.length) * 100)
     })
     counter += 1
@@ -138,28 +135,29 @@ const engine = async (quarter, year) => {
       const dataElementId = dataElementIdMap[dataElementTypeIdentifier]
 
       // TODO: verify condition for missing id
-      if (!dataElementId) return
-      const dataElementCategoryOptionCombo =
-        categoryComboIdMap[dataElementTypeIdentifier]
-      const dataElementAttributeOptionCombo =
-        attributeIdMap[dataElementTypeIdentifier]
+      if (dataElementId) {
+        const dataElementCategoryOptionCombo =
+          categoryComboIdMap[dataElementTypeIdentifier]
+        const dataElementAttributeOptionCombo =
+          attributeIdMap[dataElementTypeIdentifier]
 
-      const payload = {
-        dataSet,
-        completeDate: date,
-        period,
-        orgUnit: orgUnitId,
-        dataValues: [{
-          dataElement: dataElementId,
+        const payload = {
+          dataSet,
+          completeDate: date,
           period,
           orgUnit: orgUnitId,
-          categoryOptionCombo: dataElementCategoryOptionCombo,
-          attributeOptionCombo: dataElementAttributeOptionCombo,
-          value,
-          storedBy: username
-        }]
+          dataValues: [{
+            dataElement: dataElementId,
+            period,
+            orgUnit: orgUnitId,
+            categoryOptionCombo: dataElementCategoryOptionCombo,
+            attributeOptionCombo: dataElementAttributeOptionCombo,
+            value,
+            storedBy: username
+          }]
+        }
+        await postPayLoad(payload)
       }
-      await postPayLoad(payload)
     }
   }
   console.log('migrating done...')
