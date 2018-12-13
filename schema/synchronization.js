@@ -37,9 +37,11 @@ const facilitiesSchema = Joi.object().keys({
 module.exports = Joi.object().keys({
   totalFacilitiesAdded: Joi.number()
     .positive()
+    .allow(0)
     .required(),
   totalFacilitiesRemoved: Joi.number()
     .positive()
+    .allow(0)
     .required(),
   totalFacilitiesUpdated: Joi.number()
     .positive()

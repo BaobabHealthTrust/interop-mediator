@@ -3,12 +3,7 @@ const express = require('express')
 const Joi = require('joi')
 
 const app = express()
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://142.93.203.254:3001')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-  res.header('Access-Control-Allow-Credentials', true)
-  next()
-})
+
 /** load environmental variables */
 require('dotenv').config()
 
