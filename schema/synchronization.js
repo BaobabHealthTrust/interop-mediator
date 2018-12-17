@@ -45,6 +45,7 @@ module.exports = Joi.object().keys({
     .required(),
   totalFacilitiesUpdated: Joi.number()
     .positive()
+    .allow(0)
     .required(),
   isSuccessful: Joi.boolean()
     .valid([true, false])

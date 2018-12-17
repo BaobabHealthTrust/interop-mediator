@@ -36,8 +36,11 @@ module.exports = async (req, res) => {
     const MHFRFacilities = await queryMHFRFacilities(query)
 
     const { facilities: f } = await queryMHFRArchievedFacilities(startDate)
+
     response = MHFRFacilities.map(prepareMHFRFacility)
-    response = response.concat(f.map(prepareMHFRFacility).map(e => ({ ...e, isRemoved: true })))
+    response = response.concat(
+      f.map(prepareMHFRFacility).map(e => ({ ...e, isRemoved: true }))
+    )
 
     response = response.filter(facility => facility !== null)
 
