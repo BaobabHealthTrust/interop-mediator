@@ -97,7 +97,10 @@ module.exports.buildReturnFacility = (f, fac) => {
       previousValue: fac.OpenLMISCode.newValue,
       newValue: f.OpenLMISCode.newValue
     },
-    District: { previousValue: fac.District.newValue, newValue: f.District.newValue },
+    District: {
+      previousValue: fac.District.newValue,
+      newValue: f.District.newValue
+    },
     Zone: { previousValue: fac.Zone.newValue, newValue: f.Zone.newValue },
     isRecent: false,
     isRemoved: false
@@ -122,14 +125,17 @@ module.exports.queryBuilder = queryBuilder
 module.exports.queryMHFRFacilities = async (query = null) => {
   if (!query) query = queryBuilder()
   const MHFR_URL = `${process.env.MFL_API_URL}/api/Facilities?filter=${query}`
+  console.log(MHFR_URL)
   const response = await request.get(MHFR_URL).catch(err => error(err))
   const { data: facilities = [] } = response
   return facilities
 }
 
-module.exports.queryMHFRArchievedFacilities = async (date) => {
+module.exports.queryMHFRArchievedFacilities = async date => {
   const period = JSON.stringify({ date })
-  const MHFR_URL = `${process.env.MFL_API_URL}/api/Facilities/archived?date=${period}`
+  const MHFR_URL = `${
+    process.env.MFL_API_URL
+  }/api/Facilities/archived?date=${period}`
   const response = await request.get(MHFR_URL).catch(err => error(err))
   const { data: facilities = [] } = response
   return facilities
