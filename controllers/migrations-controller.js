@@ -41,8 +41,6 @@ module.exports.addOpenLMISMigrations = async (req, res) => {
   const clientId = req.client
   const { quarter, year } = req.body
 
-  engine(quarter, year)
-
   const successfulRecords = 0
   const failedRecords = 0
 
@@ -53,6 +51,9 @@ module.exports.addOpenLMISMigrations = async (req, res) => {
   }
 
   const migration = new Migration(props)
+  console.log(migration)
+
+  engine(quarter, year, migration._id)
 
   await migration.save()
 

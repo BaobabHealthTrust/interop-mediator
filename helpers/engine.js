@@ -2,12 +2,13 @@ const _ = require('lodash')
 const moment = require('moment')
 const axios = require('axios')
 const winston = require('winston')
-const { OrganizationUnits, ArtDataElements } = require('../models')
+const { OrganizationUnits, ArtDataElements, Migration } = require('../models')
 
-const { dhamisLog, dhamisPercentage, dhamisRecords, resetNotifications } = require('./firebase')
+const { dhamisLog, dhamisPercentage, dhamisRecords, resetNotifications, dhamisMigrating } = require('./firebase')
 
 const getDhamisData = async (quarter, year) => {
-  dhamisLog('Collecting DHAMIS data values')
+  await dhamisLog('Collecting DHAMIS data values')
+  console.log('Collecting DHAMIS data values')
   const url = process.env.DHAMIS_API_URL
   const apiKey = process.env.DHAMIS_API_KEY
   const dhamisPeriodData = (await axios.get(`${url}/api/quarters/${apiKey}`)).data
@@ -16,8 +17,11 @@ const getDhamisData = async (quarter, year) => {
     winston.error('Invalid period')
     return []
   }
+  await dhamisLog('Collecting ART Registrations')
   const artRegistrations = (await axios.get(`${url}/api/artclinic/get/${apiKey}/${id}`)).data
+  await dhamisLog('Collecting HCC Registrations')
   const hccRegistrations = (await axios.get(`${url}/api/hivcareclinic/get/${apiKey}/${id}`)).data
+  await dhamisLog('Collecting Primary And Secondary Outcomes Registrations')
   const primaryAndSecondaryOutcomes = (await axios.get(`${url}/api/artoutcomesprimarysecondary/get/${apiKey}/${id}`)).data
 
   const data = [
@@ -25,7 +29,7 @@ const getDhamisData = async (quarter, year) => {
     ...hccRegistrations,
     ...primaryAndSecondaryOutcomes
   ]
-  dhamisLog('Done collecting data values from DHAMIS')
+  await dhamisLog('Done collecting data values from DHAMIS')
   return data
 }
 
@@ -55,9 +59,10 @@ const postPayLoad = async (payload) => {
   }
 }
 
-const engine = async (quarter, year) => {
-  resetNotifications()
-  dhamisLog('Beginning migration')
+const engine = async (quarter, year, migrationId) => {
+  await resetNotifications()
+  await dhamisMigrating.set({ state: true })
+  await dhamisLog('Beginning migration')
   const period = `${year}Q${quarter}`
   const dataElements = await getDhisDataElements()
   const dataValues = await getDhamisData(quarter, year)
@@ -92,12 +97,12 @@ const engine = async (quarter, year) => {
   }
   let counter = 0
   for (const dataValue of dataValues) {
-    dhamisPercentage.set({
+    await dhamisPercentage.set({
       state: `${Math.floor((counter / dataValues.length) * 100)}`
     })
-    dhamisLog(`Migrating record number ${counter + 1}`)
-    dhamisRecords.set({
-      state: `${counter}|${dataValues.length}`
+    await dhamisLog(`Migrating ${counter + 1} of ${dataValues.length}`)
+    await dhamisRecords.set({
+      state: `${counter} | ${dataValues.length}`
     })
     counter += 1
     const orgUnitIdentifierName = dataValue['site']
@@ -115,7 +120,6 @@ const engine = async (quarter, year) => {
     if (orgUnitId) {
       const dataElementCode = _.trim(dataValue['ID'])
       const dataElementType = _.trim(dataValue['reporting_period'])
-      // const facilityName = _.trim(dataValue['Site'])
       const value = _.replace(_.trim(dataValue['data_value']), ',', '')
 
       const dataElementTypeIdentifier =
@@ -151,6 +155,15 @@ const engine = async (quarter, year) => {
       }
     }
   }
-  dhamisLog(`Migration Done`)
+  await dhamisLog(`Migration Done`)
+  await Migration.findOneAndUpdate({ _id: migrationId }, { $set: { successful_records: counter } }, {}, function (err, doc) {
+    if (err) winston.error('Error on reading from database')
+  })
+  setTimeout(async () => {
+    await resetNotifications()
+    await dhamisMigrating.set({
+      state: false
+    })
+  }, 2000)
 }
 module.exports = engine
