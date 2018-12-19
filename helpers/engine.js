@@ -60,110 +60,114 @@ const postPayLoad = async (payload) => {
 }
 
 const engine = async (quarter, year, migrationId) => {
-  await resetNotifications()
-  await dhamisMigrating.set({ state: true })
-  await dhamisLog('Beginning migration')
-  const period = `${year}Q${quarter}`
-  const dataElements = await getDhisDataElements()
-  const dataValues = await getDhamisData(quarter, year)
-  const orgUnits = await getOrgUnits()
+  try {
+    await resetNotifications()
+    await dhamisMigrating.set({ state: true })
+    await dhamisLog('Beginning migration')
+    const period = `${year}Q${quarter}`
+    const dataElements = await getDhisDataElements()
+    const dataValues = await getDhamisData(quarter, year)
+    const orgUnits = await getOrgUnits()
 
-  const dataSet = 'mLAtASimykI'
-  const username = 'haroontwalibu'
-  const date = moment(Date.now()).format('Y-M-D')
+    const dataSet = 'mLAtASimykI'
+    const username = 'haroontwalibu'
+    const date = moment(Date.now()).format('Y-M-D')
 
-  const orgUnitsMap = {}
+    const orgUnitsMap = {}
 
-  orgUnits.forEach(orgUnit => {
-    orgUnitsMap[_.trim(orgUnit.DHAMISName)] = {
-      orgunitid: orgUnit.DHIS2Id
-    }
-  })
-
-  const dataElementIdMap = {}
-  const categoryComboIdMap = {}
-  const attributeIdMap = {}
-
-  dataElements.forEach(dataElement => {
-    const code = dataElement['Code']
-    dataElementIdMap[code] = dataElement['DataElementID']
-    categoryComboIdMap[code] = dataElement['CategoryID']
-    attributeIdMap[code] = dataElement['AttributeID']
-  })
-
-  const orgUnitIdentifier = {
-    orgunitidentifiername: '',
-    orgunitidentifiercode: ''
-  }
-  let counter = 0
-  for (const dataValue of dataValues) {
-    await dhamisPercentage.set({
-      state: `${Math.floor((counter / dataValues.length) * 100)}`
+    orgUnits.forEach(orgUnit => {
+      orgUnitsMap[_.trim(orgUnit.DHAMISName)] = {
+        orgunitid: orgUnit.DHIS2Id
+      }
     })
-    await dhamisLog(`Migrating ${counter + 1} of ${dataValues.length}`)
-    await dhamisRecords.set({
-      state: `${counter} | ${dataValues.length}`
+
+    const dataElementIdMap = {}
+    const categoryComboIdMap = {}
+    const attributeIdMap = {}
+
+    dataElements.forEach(dataElement => {
+      const code = dataElement['Code']
+      dataElementIdMap[code] = dataElement['DataElementID']
+      categoryComboIdMap[code] = dataElement['CategoryID']
+      attributeIdMap[code] = dataElement['AttributeID']
     })
-    counter += 1
-    const orgUnitIdentifierName = dataValue['site']
-    if (orgUnitIdentifierName) {
-      // TODO: ask Nthezemu if key is right
-      orgUnitIdentifier['orgunitidentifiername'] = orgUnitIdentifierName
+
+    const orgUnitIdentifier = {
+      orgunitidentifiername: '',
+      orgunitidentifiercode: ''
     }
-    const orgUnitName = orgUnitIdentifier['orgunitidentifiername']
-    // TODO: are there any chances that the id won't be found?
-    let orgUnitId = ''
-    if (orgUnitsMap[orgUnitName]) {
-      orgUnitId = orgUnitsMap[orgUnitName]['orgunitid']
-    }
+    let counter = 0
+    for (const dataValue of dataValues) {
+      await dhamisPercentage.set({
+        state: `${Math.floor((counter / dataValues.length) * 100)}`
+      })
+      await dhamisLog(`Migrating ${counter + 1} of ${dataValues.length}`)
+      await dhamisRecords.set({
+        state: `${counter} | ${dataValues.length}`
+      })
+      counter += 1
+      const orgUnitIdentifierName = dataValue['site']
+      if (orgUnitIdentifierName) {
+        // TODO: ask Nthezemu if key is right
+        orgUnitIdentifier['orgunitidentifiername'] = orgUnitIdentifierName
+      }
+      const orgUnitName = orgUnitIdentifier['orgunitidentifiername']
+      // TODO: are there any chances that the id won't be found?
+      let orgUnitId = ''
+      if (orgUnitsMap[orgUnitName]) {
+        orgUnitId = orgUnitsMap[orgUnitName]['orgunitid']
+      }
 
-    if (orgUnitId) {
-      const dataElementCode = _.trim(dataValue['ID'])
-      const dataElementType = _.trim(dataValue['reporting_period'])
-      const value = _.replace(_.trim(dataValue['data_value']), ',', '')
+      if (orgUnitId) {
+        const dataElementCode = _.trim(dataValue['ID'])
+        const dataElementType = _.trim(dataValue['reporting_period'])
+        const value = _.replace(_.trim(dataValue['data_value']), ',', '')
 
-      const dataElementTypeIdentifier =
-        dataElementType === 'Cumulative'
-          ? dataElementCode + '-c'
-          : dataElementCode + '-q'
+        const dataElementTypeIdentifier =
+          dataElementType === 'Cumulative'
+            ? dataElementCode + '-c'
+            : dataElementCode + '-q'
 
-      const dataElementId = dataElementIdMap[dataElementTypeIdentifier]
+        const dataElementId = dataElementIdMap[dataElementTypeIdentifier]
 
-      // TODO: verify condition for missing id
-      if (dataElementId) {
-        const dataElementCategoryOptionCombo =
-          categoryComboIdMap[dataElementTypeIdentifier]
-        const dataElementAttributeOptionCombo =
-          attributeIdMap[dataElementTypeIdentifier]
+        // TODO: verify condition for missing id
+        if (dataElementId) {
+          const dataElementCategoryOptionCombo =
+            categoryComboIdMap[dataElementTypeIdentifier]
+          const dataElementAttributeOptionCombo =
+            attributeIdMap[dataElementTypeIdentifier]
 
-        const payload = {
-          dataSet,
-          completeDate: date,
-          period,
-          orgUnit: orgUnitId,
-          dataValues: [{
-            dataElement: dataElementId,
+          const payload = {
+            dataSet,
+            completeDate: date,
             period,
             orgUnit: orgUnitId,
-            categoryOptionCombo: dataElementCategoryOptionCombo,
-            attributeOptionCombo: dataElementAttributeOptionCombo,
-            value,
-            storedBy: username
-          }]
+            dataValues: [{
+              dataElement: dataElementId,
+              period,
+              orgUnit: orgUnitId,
+              categoryOptionCombo: dataElementCategoryOptionCombo,
+              attributeOptionCombo: dataElementAttributeOptionCombo,
+              value,
+              storedBy: username
+            }]
+          }
+          await postPayLoad(payload)
         }
-        await postPayLoad(payload)
       }
     }
-  }
-  await dhamisLog(`Migration Done`)
-  await Migration.findOneAndUpdate({ _id: migrationId }, { $set: { successful_records: counter } }, {}, function (err, doc) {
-    if (err) winston.error('Error on reading from database')
-  })
-  setTimeout(async () => {
-    await resetNotifications()
-    await dhamisMigrating.set({
-      state: false
+    await dhamisLog(`Migration Done`)
+    await Migration.findOneAndUpdate({ _id: migrationId }, { $set: { successful_records: counter } }, {}, function (err, doc) {
+      if (err) winston.error('Error on reading from database')
     })
-  }, 2000)
+    setTimeout(async () => {
+      await resetNotifications()
+      await dhamisMigrating.set({
+        state: false
+      })
+    }, 2000)
+  } catch (e) {
+    console.log(e)
+  }
 }
 module.exports = engine
