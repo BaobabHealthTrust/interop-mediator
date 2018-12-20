@@ -13,7 +13,6 @@ const db = firebaseAdmin.firestore()
 
 const dhamisProgress = db.collection('dhamis').doc('progress')
 const dhamisPercentage = db.collection('dhamis').doc('percentage')
-const dhamisRecords = db.collection('dhamis').doc('records')
 const dhamisMigrating = db.collection('dhamis').doc('migrating')
 
 const dhamisLog = (state) => {
@@ -25,14 +24,12 @@ const dhamisLog = (state) => {
 const resetNotifications = () => {
   dhamisProgress.set({ state: '' })
   dhamisPercentage.set({ state: 0 })
-  dhamisRecords.set({ state: '' })
   dhamisMigrating.set({ state: false })
 }
 
 module.exports = {
   dhamisPercentage,
   dhamisProgress,
-  dhamisRecords,
   dhamisLog,
   resetNotifications,
   dhamisMigrating

@@ -61,7 +61,7 @@ const postPayLoad = async (payload) => {
 
 const engine = async (quarter, year, migrationId) => {
   try {
-    await resetNotifications()
+    // await resetNotifications()
     await dhamisMigrating.set({ state: true })
     await dhamisLog('Beginning migration')
     const period = `${year}Q${quarter}`
