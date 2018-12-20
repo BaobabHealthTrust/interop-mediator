@@ -4,7 +4,7 @@ const axios = require('axios')
 const winston = require('winston')
 const { OrganizationUnits, ArtDataElements, Migration } = require('../models')
 
-const { dhamisLog, dhamisPercentage, dhamisRecords, resetNotifications, dhamisMigrating } = require('./firebase')
+const { dhamisLog, dhamisPercentage, resetNotifications, dhamisMigrating } = require('./firebase')
 
 const getDhamisData = async (quarter, year) => {
   await dhamisLog('Collecting DHAMIS data values')
@@ -102,9 +102,6 @@ const engine = async (quarter, year, migrationId) => {
         state: `${Math.floor((counter / dataValues.length) * 100)}`
       })
       await dhamisLog(`Migrating ${counter + 1} of ${dataValues.length}`)
-      await dhamisRecords.set({
-        state: `${counter} | ${dataValues.length}`
-      })
       counter += 1
       const orgUnitIdentifierName = dataValue['site']
       if (orgUnitIdentifierName) {
